@@ -43,4 +43,9 @@ public class Sprinkling extends BaseEntity {
   @OneToMany(mappedBy = "sprinkling", cascade = CascadeType.PERSIST)
   @Builder.Default
   List<Receiving> receivings = new ArrayList<>();
+
+  public void addReceiving(Receiving receiving) {
+    receivings.add(receiving);
+    receiving.setSprinkling(this);
+  }
 }
