@@ -1,6 +1,8 @@
 package com.kakaopay.service;
 
+import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.exception.InsufficientAmountException;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -54,9 +57,33 @@ class SprinklingServiceTest {
 
   @Test
   @DisplayName("뿌린 금액은 요청한 인원수에게 모든 금액이 분배됨")
-  void sprinkleTest02() {}
+  void sprinkleTest02() {
+
+    // When
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+
+    // Then
+    Sprinkling sprinkling =
+        sprinklingRepository
+            .findByToken(token)
+            .orElseThrow(() -> new AssertionError("Test failed."));
+
+    assertThat(sprinkling.getReceivings().size()).isEqualTo(people);
+    assertThat(sprinkling.getReceivings().stream().map(Receiving::getAmount).reduce(0L, Long::sum))
+        .isEqualTo(amount);
+  }
 
   @Test
-  @DisplayName("뿌린 금액이 요청한 인원수보다 작으면 예외 발생")
-  void sprinkleTest03() {}
+  @DisplayName("뿌린 금액이 요청한 인원수보다 적으면 예외 발생")
+  void sprinkleTest03() {
+
+    // Given
+    long amount = 2;
+    int people = 3;
+
+    // When & Then
+    assertThatThrownBy(() -> sprinklingService.sprinkle(amount, people, userId, roomId))
+        .isInstanceOf(InsufficientAmountException.class)
+        .hasMessageContaining("뿌린 금액이 요청한 인원수보다 적을 수 없습니다");
+  }
 }

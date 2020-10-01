@@ -2,6 +2,7 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.exception.InsufficientAmountException;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,10 @@ public class SprinklingServiceImpl implements SprinklingService {
 
   @Override
   public String sprinkle(long amount, int people, int userId, String roomId) {
+
+    if (amount < people) {
+      throw new InsufficientAmountException(amount, people);
+    }
 
     Sprinkling sprinkling =
         Sprinkling.builder()

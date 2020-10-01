@@ -48,6 +48,12 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(apiError, apiError.getStatus());
   }
 
+  @ExceptionHandler(SprinkleException.class)
+  protected ResponseEntity<ApiError> handle(SprinkleException e) {
+    ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage(), e);
+    return new ResponseEntity<>(apiError, apiError.getStatus());
+  }
+
   @ExceptionHandler(Exception.class)
   protected ResponseEntity<ApiError> handle(Exception e) {
     e.printStackTrace();
