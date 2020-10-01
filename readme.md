@@ -65,7 +65,7 @@
     * 토큰은 중복 방지를 위해 Unique Key 적용
     * 데이터 정합성 확보를 위해 JPA의 낙관적 잠금 사용 (version 컬럼)
 
-### 3. Git 전략
+### 3. Git
 
 * Issue
     * issue 등록 후 해당 issue 번호로 feature 브랜치 생성 후 개발 진행
@@ -77,10 +77,47 @@
     * feature -> develop: Squash and merge
     * develop -> master: Rebase and merge
 
+### 4. Rest API
+
+* Self-descriptive: Spring Rest Docs 사용
+* HATEOS: Spring HATEOS 사용
+    
+### 5. 테스트
+
+* Service 테스트: 기능 및 로직 테스트 
+* Controller 테스트: API 레이어 테스트(헤더, 파라미터 검증), Rest Docs 생성
+    
+### 6. 예외 처리
+
+* 글로벌 예외 핸들러를 정의하여 일관성 있게 예외 메시지를 처리함
+* 예외 발생 시 리턴할 Dto 클래스를 정의함: ApiError, ApiSubError
+
+| 클래스 | 필드 | 타입 | 설명 |
+| --- | --- | --- | --- |
+| ApiError | timestamp | LocalDateTime | 예외가 발생한 일시 |
+| | status | HttpStatus | 에러 코드 |
+| | message | String | 노출용 메시지 |
+| | debugMessage | String | 디버그용 메시지 |
+| | subErrors | List&lt;ApiSubError&gt; | 파라미터 검증 서브 메시지 |
+| ApiSubError | object | String | 클래스명 |
+| | field | String | 필드명 |
+| | rejectedValue | Object | 검증 실패한 입력 값 |
+| | message | String | 상세 메시지 |
+
+### 7. 뿌리기 Token 생성
+
+* SecureRandom 클래스를 사용하여 랜덤 문자열 생성
+* 숫자, 대문자, 소문자를 랜덤하게 조합
+
+### 8. 뿌리기 분배 방법
+
+* 뿌릴 금액을 뿌릴 인원에 맞게 랜덤으로 금액 분배
+* 1명에게 최소 1원은 배정되어야 함
+
 ## 구현 내역
 
 ### 1. 요구사항 리스트
 
 ### 2. API 명세
 
-## 기타 전략
+### 3. 예외 리스트
