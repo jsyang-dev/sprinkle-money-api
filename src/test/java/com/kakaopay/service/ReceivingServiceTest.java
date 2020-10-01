@@ -1,14 +1,20 @@
 package com.kakaopay.service;
 
+import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.exception.DifferentRoomException;
 import com.kakaopay.exception.DuplicateReceivingUserException;
 import com.kakaopay.exception.DuplicateSprinklingUserException;
+import com.kakaopay.exception.ReceivingExpiredException;
+import com.kakaopay.repository.SprinklingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,6 +25,7 @@ class ReceivingServiceTest {
 
   @Autowired private SprinklingService sprinklingService;
   @Autowired private ReceivingService receivingService;
+  @Autowired private SprinklingRepository sprinklingRepository;
 
   private long amount;
   private int people;
@@ -92,7 +99,23 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("뿌린지 10분이 지난 요청은 예외 발생")
-  void receivingTest05() {}
+  @Transactional
+  void receivingTest05() {
+
+    // Given
+    int receivingUserId = 900002;
+
+    Sprinkling distribution =
+        sprinklingRepository
+            .findByToken(token)
+            .orElseThrow(() -> new AssertionError("Test failed"));
+    distribution.setCreateDate(LocalDateTime.now().minusMinutes(11));
+
+    // When & Then
+    assertThatThrownBy(() -> receivingService.receive(token, receivingUserId, roomId))
+        .isInstanceOf(ReceivingExpiredException.class)
+        .hasMessageContaining("뿌린지 10분이 지난 요청은 받을 수 없습니다.");
+  }
 
   @Test
   @DisplayName("미할당 건이 없으면 예외 발생")

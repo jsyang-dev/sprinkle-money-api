@@ -5,6 +5,7 @@ import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.exception.DifferentRoomException;
 import com.kakaopay.exception.DuplicateReceivingUserException;
 import com.kakaopay.exception.DuplicateSprinklingUserException;
+import com.kakaopay.exception.ReceivingExpiredException;
 import com.kakaopay.exception.SprinklingNotFoundException;
 import com.kakaopay.repository.SprinklingRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,9 @@ public class ReceivingServiceImpl implements ReceivingService {
     }
     if (sprinkling.isDifferentRoom(roomId)) {
       throw new DifferentRoomException(roomId);
+    }
+    if (sprinkling.isReceivingExpired()) {
+      throw new ReceivingExpiredException(sprinkling.getCreateDate());
     }
 
     Receiving remainReceiving =
