@@ -19,6 +19,7 @@ import javax.validation.constraints.Positive;
 import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/v1/sprinklings")
@@ -30,8 +31,8 @@ public class SprinklingController {
 
   @PostMapping
   public ResponseEntity<SprinklingResDto> distribute(
-      @RequestHeader("X-ROOM-ID") @NotBlank String roomID,
       @RequestHeader("X-USER-ID") @Positive int userId,
+      @RequestHeader("X-ROOM-ID") @NotBlank String roomID,
       @RequestBody @Valid SprinklingReqDto sprinklingReqDto) {
 
     String token =
@@ -43,10 +44,9 @@ public class SprinklingController {
             .token(token)
             .build()
             .add(linkTo(SprinklingController.class).withSelfRel())
-            //                    .add(
-            //                            linkTo(methodOn(ReceivingController.class).receive(token,
-            // userId, roomID))
-            //                                    .withRel("receiving"))
+            .add(
+                linkTo(methodOn(ReceivingController.class).receive(token, userId, roomID))
+                    .withRel("receiving"))
             //                    .add(
             //                            linkTo(
             //                                    methodOn(SprinklingController.class)

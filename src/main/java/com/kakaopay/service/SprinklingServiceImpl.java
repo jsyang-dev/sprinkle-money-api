@@ -7,6 +7,7 @@ import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class SprinklingServiceImpl implements SprinklingService {
   private final SprinklingRepository sprinklingRepository;
 
   @Override
+  @Transactional
   public String sprinkle(long amount, int people, int userId, String roomId) {
 
     if (amount < people) {

@@ -35,4 +35,8 @@ public class Receiving extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "sprinkling_id")
   private Sprinkling sprinkling;
+
+  public boolean isNotReceived() {
+    return userId == null;
+  }
 }
