@@ -55,4 +55,8 @@ public class Sprinkling extends BaseEntity {
         .map(receiving -> Optional.ofNullable(receiving.getUserId()).orElse(0))
         .anyMatch(receiving -> receiving == userId);
   }
+
+  public boolean isSprinklingUserDuplicated(int userId) {
+    return this.userId == userId;
+  }
 }

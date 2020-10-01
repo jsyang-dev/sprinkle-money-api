@@ -1,6 +1,7 @@
 package com.kakaopay.service;
 
 import com.kakaopay.exception.DuplicateReceivingUserException;
+import com.kakaopay.exception.DuplicateSprinklingUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,8 +64,15 @@ class ReceivingServiceTest {
   }
 
   @Test
-  @DisplayName("자신이 뿌린 건을 자신이 받으면 예외 발생 ")
-  void receivingTest03() {}
+  @DisplayName("자신이 뿌린 건을 자신이 받으면 예외 발생")
+  void receivingTest03() {
+
+    // When & Then
+    assertThatThrownBy(() -> receivingService.receive(token, userId, roomId))
+        .isInstanceOf(DuplicateSprinklingUserException.class)
+        .hasMessageContaining("자신이 뿌린 건은 자신이 받을 수 없습니다")
+        .hasMessageContaining(String.valueOf(userId));
+  }
 
   @Test
   @DisplayName("다른 대화방의 사용자가 받으면 예외 발생")
