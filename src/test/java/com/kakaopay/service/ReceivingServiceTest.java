@@ -1,5 +1,6 @@
 package com.kakaopay.service;
 
+import com.kakaopay.exception.DuplicateReceivingUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -47,7 +49,18 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("동일 사용자가 한 뿌리기에서 두번 이상 받으면 예외 발생")
-  void receivingTest02() {}
+  void receivingTest02() {
+
+    // Given
+    int receivingUserId = 900002;
+    receivingService.receive(token, receivingUserId, roomId);
+
+    // When & Then
+    assertThatThrownBy(() -> receivingService.receive(token, receivingUserId, roomId))
+        .isInstanceOf(DuplicateReceivingUserException.class)
+        .hasMessageContaining("동일 사용자가 한 뿌리기에서 두번 이상 받을 수 없습니다")
+        .hasMessageContaining(String.valueOf(receivingUserId));
+  }
 
   @Test
   @DisplayName("자신이 뿌린 건을 자신이 받으면 예외 발생 ")

@@ -2,6 +2,7 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.exception.DuplicateReceivingUserException;
 import com.kakaopay.exception.SprinklingNotFoundException;
 import com.kakaopay.repository.SprinklingRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,10 @@ public class ReceivingServiceImpl implements ReceivingService {
         sprinklingRepository
             .findByToken(token)
             .orElseThrow(() -> new SprinklingNotFoundException(token));
+
+    if (sprinkling.isReceivingUserDuplicated(userId)) {
+      throw new DuplicateReceivingUserException(userId);
+    }
 
     Receiving remainReceiving =
         sprinkling.getReceivings().stream()

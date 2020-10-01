@@ -66,7 +66,7 @@ class SprinklingServiceTest {
     Sprinkling sprinkling =
         sprinklingRepository
             .findByToken(token)
-            .orElseThrow(() -> new AssertionError("Test failed."));
+            .orElseThrow(() -> new AssertionError("Test failed"));
 
     assertThat(sprinkling.getReceivings().size()).isEqualTo(people);
     assertThat(sprinkling.getReceivings().stream().map(Receiving::getAmount).reduce(0L, Long::sum))

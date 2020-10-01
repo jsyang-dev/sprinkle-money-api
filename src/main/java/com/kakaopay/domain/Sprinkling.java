@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -47,5 +48,11 @@ public class Sprinkling extends BaseEntity {
   public void addReceiving(Receiving receiving) {
     receivings.add(receiving);
     receiving.setSprinkling(this);
+  }
+
+  public boolean isReceivingUserDuplicated(int userId) {
+    return receivings.stream()
+        .map(receiving -> Optional.ofNullable(receiving.getUserId()).orElse(0))
+        .anyMatch(receiving -> receiving == userId);
   }
 }
