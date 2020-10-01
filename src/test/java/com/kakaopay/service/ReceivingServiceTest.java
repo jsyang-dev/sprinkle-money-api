@@ -4,6 +4,7 @@ import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.exception.DifferentRoomException;
 import com.kakaopay.exception.DuplicateReceivingUserException;
 import com.kakaopay.exception.DuplicateSprinklingUserException;
+import com.kakaopay.exception.ReceivingCompletedException;
 import com.kakaopay.exception.ReceivingExpiredException;
 import com.kakaopay.repository.SprinklingRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,10 +115,23 @@ class ReceivingServiceTest {
     // When & Then
     assertThatThrownBy(() -> receivingService.receive(token, receivingUserId, roomId))
         .isInstanceOf(ReceivingExpiredException.class)
-        .hasMessageContaining("뿌린지 10분이 지난 요청은 받을 수 없습니다.");
+        .hasMessageContaining("뿌린지 10분이 지난 요청은 받을 수 없습니다");
   }
 
   @Test
   @DisplayName("미할당 건이 없으면 예외 발생")
-  void receivingTest06() {}
+  void receivingTest06() {
+
+    // Given
+    int otherReceivingUserId = 900005;
+    receivingService.receive(token, 900002, roomId);
+    receivingService.receive(token, 900003, roomId);
+    receivingService.receive(token, 900004, roomId);
+
+    // When & Then
+    assertThatThrownBy(() -> receivingService.receive(token, otherReceivingUserId, roomId))
+        .isInstanceOf(ReceivingCompletedException.class)
+        .hasMessageContaining("받기가 마감되어 받을 수 없습니다")
+        .hasMessageContaining(token);
+  }
 }

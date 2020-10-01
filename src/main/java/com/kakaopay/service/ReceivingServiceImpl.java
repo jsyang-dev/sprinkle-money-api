@@ -5,6 +5,7 @@ import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.exception.DifferentRoomException;
 import com.kakaopay.exception.DuplicateReceivingUserException;
 import com.kakaopay.exception.DuplicateSprinklingUserException;
+import com.kakaopay.exception.ReceivingCompletedException;
 import com.kakaopay.exception.ReceivingExpiredException;
 import com.kakaopay.exception.SprinklingNotFoundException;
 import com.kakaopay.repository.SprinklingRepository;
@@ -27,6 +28,19 @@ public class ReceivingServiceImpl implements ReceivingService {
             .findByToken(token)
             .orElseThrow(() -> new SprinklingNotFoundException(token));
 
+    validateSprinkling(sprinkling, userId, roomId);
+
+    Receiving remainReceiving =
+        sprinkling.getReceivings().stream()
+            .filter(Receiving::isNotReceived)
+            .findFirst()
+            .orElseThrow(() -> new ReceivingCompletedException(token));
+
+    remainReceiving.setUserId(userId);
+    return remainReceiving.getAmount();
+  }
+
+  private void validateSprinkling(Sprinkling sprinkling, int userId, String roomId) {
     if (sprinkling.isReceivingUserDuplicated(userId)) {
       throw new DuplicateReceivingUserException(userId);
     }
@@ -39,14 +53,5 @@ public class ReceivingServiceImpl implements ReceivingService {
     if (sprinkling.isReceivingExpired()) {
       throw new ReceivingExpiredException(sprinkling.getCreateDate());
     }
-
-    Receiving remainReceiving =
-        sprinkling.getReceivings().stream()
-            .filter(Receiving::isNotReceived)
-            .findFirst()
-            .orElseThrow(() -> new SprinklingNotFoundException(token));
-
-    remainReceiving.setUserId(userId);
-    return remainReceiving.getAmount();
   }
 }
