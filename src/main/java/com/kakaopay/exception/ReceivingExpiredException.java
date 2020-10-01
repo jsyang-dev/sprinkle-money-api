@@ -7,7 +7,7 @@ public class ReceivingExpiredException extends RuntimeException {
 
   public ReceivingExpiredException(LocalDateTime createDate) {
     super(
-        "뿌린지 10분이 지난 요청은 받을 수 없습니다.\ncreateDate: "
+        "뿌린지 10분이 지난 요청은 받을 수 없습니다. createDate: "
             + createDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
   }
 }
