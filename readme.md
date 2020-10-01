@@ -42,3 +42,41 @@
     * 뿌린 사람 자신만 조회를 할 수 있습니다. 다른사람의 뿌리기건이나 유효하지
     않은 token에 대해서는 조회 실패 응답이 내려가야 합니다.
     * 뿌린 건에 대한 조회는 7일 동안 할 수 있습니다.
+
+## 개발 환경
+
+* Language: Java 11
+* Framework: Spring Boot 2.3.4.RELEASE
+* Database: Mysql 8 (Test Scope: H2)
+
+## 문제해결 전략
+
+### 1. 용어 통일성 확보
+
+* 단어사전, 용어사전 정의
+![](https://user-images.githubusercontent.com/35869083/94777256-2018ba00-03fe-11eb-935c-ee597366efc2.png)
+
+### 2. DB 모델링
+
+* 뿌리기(Sprinkling), 받기(Receiving) 테이블로 구성
+![](https://user-images.githubusercontent.com/35869083/94777408-6bcb6380-03fe-11eb-861d-dffcd5dcfe72.png)
+
+### 3. Git 전략
+
+* Issue
+    * issue 등록 후 해당 issue 번호로 feature 브랜치 생성 후 개발 진행
+* Branch
+    * master: 운영 서버에 배포
+    * develop: 개발 서버에 배포
+    * feature: 요건 개발(브랜치 명명규칙: feature/[issue 번호]-[issue 명])
+* Merge
+    * feature -> develop: Squash and merge
+    * develop -> master: Rebase and merge
+
+## 구현 내역
+
+### 1. 요구사항 리스트
+
+### 2. API 명세
+
+## 기타 전략

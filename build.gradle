@@ -2,11 +2,17 @@ plugins {
     id 'org.springframework.boot' version '2.3.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id "org.asciidoctor.convert" version "1.5.3"
 }
 
 group = 'com.kakaopay'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+    resourcesDir = file('src/main/resources')
+}
 
 configurations {
     compileOnly {
@@ -20,6 +26,18 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.6.1'
+    implementation 'org.mapstruct:mapstruct:1.3.1.Final'
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.3.1.Final"
+    runtimeOnly 'mysql:mysql-connector-java'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.2.RELEASE'
+    testRuntimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.2.RELEASE'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -27,4 +45,25 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("${asciidoctor.outputDir}/html5/")
+    into file("${resourcesDir}/static/docs")
+}
+
+bootJar {
+    dependsOn copyDocument
 }
