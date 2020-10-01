@@ -59,4 +59,8 @@ public class Sprinkling extends BaseEntity {
   public boolean isSprinklingUserDuplicated(int userId) {
     return this.userId == userId;
   }
+
+  public boolean isDifferentRoom(String roomId) {
+    return !roomId.equals(this.roomId);
+  }
 }

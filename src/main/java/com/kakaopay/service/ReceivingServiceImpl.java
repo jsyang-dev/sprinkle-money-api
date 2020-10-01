@@ -2,6 +2,7 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.exception.DifferentRoomException;
 import com.kakaopay.exception.DuplicateReceivingUserException;
 import com.kakaopay.exception.DuplicateSprinklingUserException;
 import com.kakaopay.exception.SprinklingNotFoundException;
@@ -30,6 +31,9 @@ public class ReceivingServiceImpl implements ReceivingService {
     }
     if (sprinkling.isSprinklingUserDuplicated(userId)) {
       throw new DuplicateSprinklingUserException(userId);
+    }
+    if (sprinkling.isDifferentRoom(roomId)) {
+      throw new DifferentRoomException(roomId);
     }
 
     Receiving remainReceiving =
