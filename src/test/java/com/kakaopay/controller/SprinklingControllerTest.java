@@ -67,7 +67,7 @@ class SprinklingControllerTest {
         .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("token").isNotEmpty())
         .andExpect(jsonPath("_links.self").exists())
-        //        .andExpect(jsonPath("_links.receiving").exists())
+        .andExpect(jsonPath("_links.receiving").exists())
         //        .andExpect(jsonPath("_links.read").exists())
         .andExpect(jsonPath("_links.profile").exists())
         .andDo(
@@ -76,7 +76,7 @@ class SprinklingControllerTest {
                 preprocessResponse(prettyPrint()),
                 links(
                     linkWithRel("self").description("셀프 링크"),
-                    //                    linkWithRel("receiving").description("받기 링크"),
+                    linkWithRel("receiving").description("받기 링크"),
                     //                    linkWithRel("read").description("조회 링크"),
                     linkWithRel("profile").description("프로파일 링크")),
                 requestHeaders(

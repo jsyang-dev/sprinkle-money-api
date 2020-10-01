@@ -10,8 +10,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -19,6 +22,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Sprinkling extends BaseEntity {
+
+  public static final int EXPIRE_RECEIVING_SECONDS = 60 * 10;
 
   // token
   @Column(unique = true, nullable = false, length = 3)
@@ -47,5 +52,24 @@ public class Sprinkling extends BaseEntity {
   public void addReceiving(Receiving receiving) {
     receivings.add(receiving);
     receiving.setSprinkling(this);
+  }
+
+  public boolean isReceivingUserDuplicated(int userId) {
+    return receivings.stream()
+        .map(receiving -> Optional.ofNullable(receiving.getUserId()).orElse(0))
+        .anyMatch(receiving -> receiving == userId);
+  }
+
+  public boolean isSprinklingUserDuplicated(int userId) {
+    return this.userId == userId;
+  }
+
+  public boolean isDifferentRoom(String roomId) {
+    return !roomId.equals(this.roomId);
+  }
+
+  public boolean isReceivingExpired() {
+    long secondsGap = Duration.between(super.getCreateDate(), LocalDateTime.now()).getSeconds();
+    return secondsGap > EXPIRE_RECEIVING_SECONDS;
   }
 }
