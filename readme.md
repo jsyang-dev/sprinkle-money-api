@@ -61,6 +61,10 @@
 * 뿌리기(Sprinkling), 받기(Receiving) 테이블로 구성
 ![](https://user-images.githubusercontent.com/35869083/94777408-6bcb6380-03fe-11eb-861d-dffcd5dcfe72.png)
 
+    * 기본키: 자동증가 BIGINT 타입
+    * 토큰은 중복 방지를 위해 Unique Key 적용
+    * 데이터 정합성 확보를 위해 JPA의 낙관적 잠금 사용 (version 컬럼)
+
 ### 3. Git 전략
 
 * Issue
