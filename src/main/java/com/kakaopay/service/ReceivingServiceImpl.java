@@ -28,7 +28,7 @@ public class ReceivingServiceImpl implements ReceivingService {
             .findByToken(token)
             .orElseThrow(() -> new SprinklingNotFoundException(token));
 
-    validateSprinkling(sprinkling, userId, roomId);
+    validateReceiving(sprinkling, userId, roomId);
 
     Receiving remainReceiving =
         sprinkling.getReceivings().stream()
@@ -40,7 +40,7 @@ public class ReceivingServiceImpl implements ReceivingService {
     return remainReceiving.getAmount();
   }
 
-  private void validateSprinkling(Sprinkling sprinkling, int userId, String roomId) {
+  private void validateReceiving(Sprinkling sprinkling, int userId, String roomId) {
     if (sprinkling.isReceivingUserDuplicated(userId)) {
       throw new DuplicateReceivingUserException(userId);
     }

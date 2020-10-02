@@ -51,12 +51,7 @@ public class SprinklingServiceImpl implements SprinklingService {
             .findByToken(token)
             .orElseThrow(() -> new SprinklingNotFoundException(token));
 
-    if (sprinkling.isPermissionDenied(userId)) {
-      throw new PermissionDeniedException(token);
-    }
-    if (sprinkling.isReadExpired()) {
-      throw new ReadExpiredException(sprinkling.getCreateDate());
-    }
+    validateReading(sprinkling, token, userId);
 
     return sprinklingMapper.toDto(sprinkling);
   }
@@ -75,6 +70,15 @@ public class SprinklingServiceImpl implements SprinklingService {
 
       Receiving receiving = Receiving.builder().amount(sprinklingAmount).build();
       sprinkling.addReceiving(receiving);
+    }
+  }
+
+  private void validateReading(Sprinkling sprinkling, String token, int userId) {
+    if (sprinkling.isPermissionDenied(userId)) {
+      throw new PermissionDeniedException(token);
+    }
+    if (sprinkling.isReadExpired()) {
+      throw new ReadExpiredException(sprinkling.getCreateDate());
     }
   }
 }
