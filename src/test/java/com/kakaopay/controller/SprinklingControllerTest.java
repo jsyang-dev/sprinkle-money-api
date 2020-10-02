@@ -240,7 +240,7 @@ class SprinklingControllerTest {
                     fieldWithPath("createDate").description("뿌린 시각"),
                     fieldWithPath("totalAmount").description("뿌린 금액"),
                     fieldWithPath("receivedAmount").description("받기 완료된 금액"),
-                    fieldWithPath("receivingDtos[0].amount").description("받은 금액"),
-                    fieldWithPath("receivingDtos[0].userId").description("받은 사용자 ID"))));
+                    fieldWithPath("receivingDtos[].amount").description("받은 금액"),
+                    fieldWithPath("receivingDtos[].userId").description("받은 사용자 ID"))));
   }
 }
