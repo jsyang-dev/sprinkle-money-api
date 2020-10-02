@@ -1,8 +1,6 @@
 package com.kakaopay.controller;
 
-import com.kakaopay.dto.ReadDto.SprinklingDto;
-import com.kakaopay.dto.SprinklingReqDto;
-import com.kakaopay.dto.SprinklingResDto;
+import com.kakaopay.dto.ReadDto;
 import com.kakaopay.service.SprinklingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
@@ -20,6 +18,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
+import static com.kakaopay.dto.SprinklingDto.Request;
+import static com.kakaopay.dto.SprinklingDto.Response;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -32,17 +32,16 @@ public class SprinklingController {
   private final SprinklingService sprinklingService;
 
   @PostMapping
-  public ResponseEntity<SprinklingResDto> distribute(
+  public ResponseEntity<Response> distribute(
       @RequestHeader("X-USER-ID") @Positive int userId,
       @RequestHeader("X-ROOM-ID") @NotBlank String roomID,
-      @RequestBody @Valid SprinklingReqDto sprinklingReqDto) {
+      @RequestBody @Valid Request request) {
 
     String token =
-        sprinklingService.sprinkle(
-            sprinklingReqDto.getAmount(), sprinklingReqDto.getPeople(), userId, roomID);
+        sprinklingService.sprinkle(request.getAmount(), request.getPeople(), userId, roomID);
 
-    SprinklingResDto sprinklingResDto =
-        SprinklingResDto.builder()
+    Response response =
+        Response.builder()
             .token(token)
             .build()
             .add(linkTo(SprinklingController.class).withSelfRel())
@@ -54,14 +53,14 @@ public class SprinklingController {
 
     return ResponseEntity.created(
             linkTo(methodOn(SprinklingController.class).read(token, userId)).toUri())
-        .body(sprinklingResDto);
+        .body(response);
   }
 
   @GetMapping("/{token}")
-  public ResponseEntity<SprinklingDto> read(
+  public ResponseEntity<ReadDto.SprinklingDto> read(
       @PathVariable String token, @RequestHeader("X-USER-ID") @Positive int userId) {
 
-    SprinklingDto sprinklingDto = sprinklingService.read(token, userId);
+    ReadDto.SprinklingDto sprinklingDto = sprinklingService.read(token, userId);
 
     sprinklingDto
         .add(linkTo(methodOn(SprinklingController.class).read(token, userId)).withSelfRel())

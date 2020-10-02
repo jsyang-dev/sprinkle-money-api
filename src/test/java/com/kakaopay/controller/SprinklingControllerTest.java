@@ -1,7 +1,7 @@
 package com.kakaopay.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kakaopay.dto.SprinklingReqDto;
+import com.kakaopay.dto.SprinklingDto.Request;
 import com.kakaopay.service.ReceivingService;
 import com.kakaopay.service.SprinklingService;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,7 @@ class SprinklingControllerTest {
   void SprinklingTest() throws Exception {
 
     // Given
-    SprinklingReqDto sprinklingReqDto = SprinklingReqDto.builder().amount(20000).people(3).build();
+    Request request = Request.builder().amount(20000).people(3).build();
 
     // When
     final ResultActions actions =
@@ -64,7 +64,7 @@ class SprinklingControllerTest {
                 .header("X-ROOM-ID", "TEST-ROOM")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(sprinklingReqDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
     // Then
     actions
@@ -105,7 +105,7 @@ class SprinklingControllerTest {
   void HeaderValidationTest01() throws Exception {
 
     // Given
-    SprinklingReqDto sprinklingReqDto = SprinklingReqDto.builder().amount(20000).people(3).build();
+    Request request = Request.builder().amount(20000).people(3).build();
 
     // When
     final ResultActions actions =
@@ -113,7 +113,7 @@ class SprinklingControllerTest {
             post("/v1/sprinklings")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(sprinklingReqDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
     // Then
     actions
@@ -132,7 +132,7 @@ class SprinklingControllerTest {
   void HeaderValidationTest02() throws Exception {
 
     // Given
-    SprinklingReqDto sprinklingReqDto = SprinklingReqDto.builder().amount(20000).people(3).build();
+    Request request = Request.builder().amount(20000).people(3).build();
 
     // When
     final ResultActions actions =
@@ -142,7 +142,7 @@ class SprinklingControllerTest {
                 .header("X-ROOM-ID", "")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(sprinklingReqDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
     // Then
     actions
@@ -161,7 +161,7 @@ class SprinklingControllerTest {
   void ParameterValidationTest() throws Exception {
 
     // Given
-    SprinklingReqDto sprinklingReqDto = SprinklingReqDto.builder().amount(0).build();
+    Request request = Request.builder().amount(0).build();
 
     // When
     final ResultActions actions =
@@ -171,7 +171,7 @@ class SprinklingControllerTest {
                 .header("X-ROOM-ID", "TEST-ROOM")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(sprinklingReqDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
     // Then
     actions
