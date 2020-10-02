@@ -5,6 +5,7 @@ import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.dto.ReadDto.SprinklingDto;
 import com.kakaopay.exception.InsufficientAmountException;
 import com.kakaopay.exception.PermissionDeniedException;
+import com.kakaopay.exception.ReadExpiredException;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -126,5 +130,21 @@ class SprinklingServiceTest {
 
   @Test
   @DisplayName("뿌린지 7일이 지난 조회 요청은 예외 발생")
-  void readTest03() {}
+  @Transactional
+  void readTest03() {
+
+    // Given
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+
+    Sprinkling sprinkling =
+        sprinklingRepository
+            .findByToken(token)
+            .orElseThrow(() -> new AssertionError("Test failed"));
+    sprinkling.setCreateDate(LocalDateTime.now().minusSeconds(Sprinkling.EXPIRE_READ_SECONDS + 1));
+
+    // When & Then
+    assertThatThrownBy(() -> sprinklingService.read(token, userId))
+        .isInstanceOf(ReadExpiredException.class)
+        .hasMessageContaining("뿌린지 7일이 지난 조회 요청은 처리할 수 없습니다");
+  }
 }

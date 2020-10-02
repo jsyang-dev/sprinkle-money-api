@@ -5,6 +5,7 @@ import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.dto.ReadDto;
 import com.kakaopay.exception.InsufficientAmountException;
 import com.kakaopay.exception.PermissionDeniedException;
+import com.kakaopay.exception.ReadExpiredException;
 import com.kakaopay.exception.SprinklingNotFoundException;
 import com.kakaopay.mapper.SprinklingMapper;
 import com.kakaopay.repository.SprinklingRepository;
@@ -52,6 +53,9 @@ public class SprinklingServiceImpl implements SprinklingService {
 
     if (sprinkling.isPermissionDenied(userId)) {
       throw new PermissionDeniedException(token);
+    }
+    if (sprinkling.isReadExpired()) {
+      throw new ReadExpiredException(sprinkling.getCreateDate());
     }
 
     return sprinklingMapper.toDto(sprinkling);
