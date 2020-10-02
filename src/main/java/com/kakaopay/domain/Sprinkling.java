@@ -24,6 +24,7 @@ import java.util.Optional;
 public class Sprinkling extends BaseEntity {
 
   public static final int EXPIRE_RECEIVING_SECONDS = 60 * 10;
+  public static final int EXPIRE_READ_SECONDS = 60 * 60 * 24 * 7;
 
   // token
   @Column(unique = true, nullable = false, length = 3)
@@ -71,5 +72,14 @@ public class Sprinkling extends BaseEntity {
   public boolean isReceivingExpired() {
     long secondsGap = Duration.between(super.getCreateDate(), LocalDateTime.now()).getSeconds();
     return secondsGap > EXPIRE_RECEIVING_SECONDS;
+  }
+
+  public boolean isPermissionDenied(int userId) {
+    return this.userId != userId;
+  }
+
+  public boolean isReadExpired() {
+    long secondsGap = Duration.between(super.getCreateDate(), LocalDateTime.now()).getSeconds();
+    return secondsGap > EXPIRE_READ_SECONDS;
   }
 }

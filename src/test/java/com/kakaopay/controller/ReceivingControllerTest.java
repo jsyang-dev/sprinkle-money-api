@@ -70,7 +70,7 @@ class ReceivingControllerTest {
         .andExpect(jsonPath("amount").isNumber())
         .andExpect(jsonPath("_links.self").exists())
         .andExpect(jsonPath("_links.sprinkling").exists())
-        //                .andExpect(jsonPath("_links.read").exists())
+        .andExpect(jsonPath("_links.read").exists())
         .andExpect(jsonPath("_links.profile").exists())
         .andDo(
             document(
@@ -79,7 +79,7 @@ class ReceivingControllerTest {
                 links(
                     linkWithRel("self").description("셀프 링크"),
                     linkWithRel("sprinkling").description("뿌리기 링크"),
-                    // linkWithRel("read").description("조회 링크"),
+                    linkWithRel("read").description("조회 링크"),
                     linkWithRel("profile").description("프로파일 링크")),
                 requestHeaders(
                     headerWithName(HttpHeaders.ACCEPT).description("Accept 헤더"),

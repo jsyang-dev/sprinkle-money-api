@@ -2,7 +2,12 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.dto.ReadDto;
 import com.kakaopay.exception.InsufficientAmountException;
+import com.kakaopay.exception.PermissionDeniedException;
+import com.kakaopay.exception.ReadExpiredException;
+import com.kakaopay.exception.SprinklingNotFoundException;
+import com.kakaopay.mapper.SprinklingMapper;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SprinklingServiceImpl implements SprinklingService {
 
   private final SprinklingRepository sprinklingRepository;
+  private final SprinklingMapper sprinklingMapper;
 
   @Override
   @Transactional
@@ -37,6 +43,19 @@ public class SprinklingServiceImpl implements SprinklingService {
     return sprinklingRepository.save(sprinkling).getToken();
   }
 
+  @Override
+  public ReadDto.SprinklingDto read(String token, int userId) {
+
+    Sprinkling sprinkling =
+        sprinklingRepository
+            .findByToken(token)
+            .orElseThrow(() -> new SprinklingNotFoundException(token));
+
+    validateReading(sprinkling, token, userId);
+
+    return sprinklingMapper.toDto(sprinkling);
+  }
+
   private void makeReceivingInSprinkling(long amount, int people, Sprinkling sprinkling) {
     long remainAmount = amount;
 
@@ -51,6 +70,15 @@ public class SprinklingServiceImpl implements SprinklingService {
 
       Receiving receiving = Receiving.builder().amount(sprinklingAmount).build();
       sprinkling.addReceiving(receiving);
+    }
+  }
+
+  private void validateReading(Sprinkling sprinkling, String token, int userId) {
+    if (sprinkling.isPermissionDenied(userId)) {
+      throw new PermissionDeniedException(token);
+    }
+    if (sprinkling.isReadExpired()) {
+      throw new ReadExpiredException(sprinkling.getCreateDate());
     }
   }
 }

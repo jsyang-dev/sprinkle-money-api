@@ -2,7 +2,10 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.dto.ReadDto.SprinklingDto;
 import com.kakaopay.exception.InsufficientAmountException;
+import com.kakaopay.exception.PermissionDeniedException;
+import com.kakaopay.exception.ReadExpiredException;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -20,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class SprinklingServiceTest {
 
   @Autowired private SprinklingService sprinklingService;
+  @Autowired private ReceivingService receivingService;
   @Autowired private SprinklingRepository sprinklingRepository;
 
   private long amount;
@@ -85,5 +92,59 @@ class SprinklingServiceTest {
     assertThatThrownBy(() -> sprinklingService.sprinkle(amount, people, userId, roomId))
         .isInstanceOf(InsufficientAmountException.class)
         .hasMessageContaining("뿌린 금액이 요청한 인원수보다 적을 수 없습니다");
+  }
+
+  @Test
+  @DisplayName("조회를 요청하고 뿌리기 상태를 반환 받음")
+  void readTest01() {
+
+    // Given
+    int receivingUserId = 900002;
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+    long receivedAmount = receivingService.receive(token, receivingUserId, roomId);
+
+    // When
+    SprinklingDto sprinklingDto = sprinklingService.read(token, userId);
+
+    // Then
+    assertThat(sprinklingDto.getCreateDate()).isNotNull();
+    assertThat(sprinklingDto.getTotalAmount()).isEqualTo(amount);
+    assertThat(sprinklingDto.getReceivedAmount()).isEqualTo(receivedAmount);
+    assertThat(sprinklingDto.getReceivingDtos()).hasSize(people);
+  }
+
+  @Test
+  @DisplayName("뿌린 사용자 이외의 사용자가 조회하면 예외 발생")
+  void readTest02() {
+
+    // Given
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+    int otherUserId = 900002;
+
+    // When & Then
+    assertThatThrownBy(() -> sprinklingService.read(token, otherUserId))
+        .isInstanceOf(PermissionDeniedException.class)
+        .hasMessageContaining("뿌린 사용자 이외의 사용자가 조회할 수 없습니다")
+        .hasMessageContaining(token);
+  }
+
+  @Test
+  @DisplayName("뿌린지 7일이 지난 조회 요청은 예외 발생")
+  @Transactional
+  void readTest03() {
+
+    // Given
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+
+    Sprinkling sprinkling =
+        sprinklingRepository
+            .findByToken(token)
+            .orElseThrow(() -> new AssertionError("Test failed"));
+    sprinkling.setCreateDate(LocalDateTime.now().minusSeconds(Sprinkling.EXPIRE_READ_SECONDS + 1));
+
+    // When & Then
+    assertThatThrownBy(() -> sprinklingService.read(token, userId))
+        .isInstanceOf(ReadExpiredException.class)
+        .hasMessageContaining("뿌린지 7일이 지난 조회 요청은 처리할 수 없습니다");
   }
 }

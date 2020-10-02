@@ -1,6 +1,6 @@
 package com.kakaopay.controller;
 
-import com.kakaopay.dto.ReceivingResDto;
+import com.kakaopay.dto.ReceivingDto;
 import com.kakaopay.service.ReceivingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
@@ -27,25 +27,22 @@ public class ReceivingController {
   private final ReceivingService receivingService;
 
   @PutMapping("/{token}")
-  public ResponseEntity<ReceivingResDto> receive(
+  public ResponseEntity<ReceivingDto> receive(
       @PathVariable String token,
       @RequestHeader("X-USER-ID") @Positive int userId,
       @RequestHeader("X-ROOM-ID") @NotBlank String roomID) {
 
     long receivedAmount = receivingService.receive(token, userId, roomID);
 
-    ReceivingResDto receivingResDto =
-        ReceivingResDto.builder()
+    ReceivingDto receivingResDto =
+        ReceivingDto.builder()
             .amount(receivedAmount)
             .build()
             .add(
                 linkTo(methodOn(ReceivingController.class).receive(token, userId, roomID))
                     .withSelfRel())
             .add(linkTo(SprinklingController.class).withRel("sprinkling"))
-            //            .add(
-            //                linkTo(methodOn(SprinklingController.class).read(token, userId,
-            // roomID))
-            //                    .withRel("read"))
+            .add(linkTo(methodOn(SprinklingController.class).read(token, userId)).withRel("read"))
             .add(Link.of("/docs/index.html#receiving").withRel("profile"));
 
     return ResponseEntity.ok(receivingResDto);
