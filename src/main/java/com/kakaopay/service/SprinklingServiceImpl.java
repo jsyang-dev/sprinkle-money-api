@@ -2,7 +2,10 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.dto.ReadDto;
 import com.kakaopay.exception.InsufficientAmountException;
+import com.kakaopay.exception.SprinklingNotFoundException;
+import com.kakaopay.mapper.SprinklingMapper;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SprinklingServiceImpl implements SprinklingService {
 
   private final SprinklingRepository sprinklingRepository;
+  private final SprinklingMapper sprinklingMapper;
 
   @Override
   @Transactional
@@ -35,6 +39,17 @@ public class SprinklingServiceImpl implements SprinklingService {
     makeReceivingInSprinkling(amount, people, sprinkling);
 
     return sprinklingRepository.save(sprinkling).getToken();
+  }
+
+  @Override
+  public ReadDto.SprinklingDto read(String token, int userId) {
+
+    Sprinkling sprinkling =
+        sprinklingRepository
+            .findByToken(token)
+            .orElseThrow(() -> new SprinklingNotFoundException(token));
+
+    return sprinklingMapper.toDto(sprinkling);
   }
 
   private void makeReceivingInSprinkling(long amount, int people, Sprinkling sprinkling) {

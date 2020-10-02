@@ -42,10 +42,7 @@ public class ReceivingController {
                 linkTo(methodOn(ReceivingController.class).receive(token, userId, roomID))
                     .withSelfRel())
             .add(linkTo(SprinklingController.class).withRel("sprinkling"))
-            //            .add(
-            //                linkTo(methodOn(SprinklingController.class).read(token, userId,
-            // roomID))
-            //                    .withRel("read"))
+            .add(linkTo(methodOn(SprinklingController.class).read(token, userId)).withRel("read"))
             .add(Link.of("/docs/index.html#receiving").withRel("profile"));
 
     return ResponseEntity.ok(receivingResDto);

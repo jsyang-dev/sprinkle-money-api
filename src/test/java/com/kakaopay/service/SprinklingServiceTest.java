@@ -2,6 +2,7 @@ package com.kakaopay.service;
 
 import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
+import com.kakaopay.dto.ReadDto.SprinklingDto;
 import com.kakaopay.exception.InsufficientAmountException;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class SprinklingServiceTest {
 
   @Autowired private SprinklingService sprinklingService;
+  @Autowired private ReceivingService receivingService;
   @Autowired private SprinklingRepository sprinklingRepository;
 
   private long amount;
@@ -86,4 +88,31 @@ class SprinklingServiceTest {
         .isInstanceOf(InsufficientAmountException.class)
         .hasMessageContaining("뿌린 금액이 요청한 인원수보다 적을 수 없습니다");
   }
+
+  @Test
+  @DisplayName("조회를 요청하고 뿌리기 상태를 반환 받음")
+  void readTest01() {
+
+    // Given
+    int receivingUserId = 900002;
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+    long receivedAmount = receivingService.receive(token, receivingUserId, roomId);
+
+    // When
+    SprinklingDto sprinklingDto = sprinklingService.read(token, userId);
+
+    // Then
+    assertThat(sprinklingDto.getCreateDate()).isNotNull();
+    assertThat(sprinklingDto.getTotalAmount()).isEqualTo(amount);
+    assertThat(sprinklingDto.getReceivedAmount()).isEqualTo(receivedAmount);
+    assertThat(sprinklingDto.getReceivingDtos()).hasSize(people);
+  }
+
+  @Test
+  @DisplayName("뿌린 사용자만 조회가 가능하다")
+  void readTest02() {}
+
+  @Test
+  @DisplayName("뿌린 건에 대한 조회는 7일간만 가능하다")
+  void readTest03() {}
 }
