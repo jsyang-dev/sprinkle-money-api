@@ -5,6 +5,7 @@ import com.kakaopay.dto.ApiSubError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,14 @@ public class GlobalExceptionHandler {
             .collect(Collectors.toList());
 
     ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "요청 Body 정보가 잘못되었습니다.", subErrors);
+    return new ResponseEntity<>(apiError, apiError.getStatus());
+  }
+
+  @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+  protected ResponseEntity<ApiError> handle(ObjectOptimisticLockingFailureException e) {
+    ApiError apiError =
+        new ApiError(
+            HttpStatus.INTERNAL_SERVER_ERROR, "일시적으로 받기 요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요.", e);
     return new ResponseEntity<>(apiError, apiError.getStatus());
   }
 

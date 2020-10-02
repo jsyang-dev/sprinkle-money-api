@@ -99,7 +99,7 @@ class ReceivingServiceTest {
   }
 
   @Test
-  @DisplayName("뿌린지 10분이 지난 요청은 예외 발생")
+  @DisplayName("뿌린지 10분이 지난 받기 요청은 예외 발생")
   @Transactional
   void receivingTest05() {
 
@@ -110,12 +110,13 @@ class ReceivingServiceTest {
         sprinklingRepository
             .findByToken(token)
             .orElseThrow(() -> new AssertionError("Test failed"));
-    distribution.setCreateDate(LocalDateTime.now().minusMinutes(11));
+    distribution.setCreateDate(
+        LocalDateTime.now().minusSeconds(Sprinkling.EXPIRE_RECEIVING_SECONDS + 1));
 
     // When & Then
     assertThatThrownBy(() -> receivingService.receive(token, receivingUserId, roomId))
         .isInstanceOf(ReceivingExpiredException.class)
-        .hasMessageContaining("뿌린지 10분이 지난 요청은 받을 수 없습니다");
+        .hasMessageContaining("뿌린지 10분이 지난 받기 요청은 처리할 수 없습니다");
   }
 
   @Test
