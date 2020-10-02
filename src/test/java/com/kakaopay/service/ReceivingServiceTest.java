@@ -99,7 +99,7 @@ class ReceivingServiceTest {
   }
 
   @Test
-  @DisplayName("뿌린지 10분이 지난 요청은 예외 발생")
+  @DisplayName("뿌린지 10분이 지난 받기 요청은 예외 발생")
   @Transactional
   void receivingTest05() {
 

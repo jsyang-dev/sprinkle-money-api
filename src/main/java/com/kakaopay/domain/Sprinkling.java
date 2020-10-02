@@ -72,4 +72,8 @@ public class Sprinkling extends BaseEntity {
     long secondsGap = Duration.between(super.getCreateDate(), LocalDateTime.now()).getSeconds();
     return secondsGap > EXPIRE_RECEIVING_SECONDS;
   }
+
+  public boolean isPermissionDenied(int userId) {
+    return this.userId != userId;
+  }
 }

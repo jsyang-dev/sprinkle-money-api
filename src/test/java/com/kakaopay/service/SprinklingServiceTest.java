@@ -4,6 +4,7 @@ import com.kakaopay.domain.Receiving;
 import com.kakaopay.domain.Sprinkling;
 import com.kakaopay.dto.ReadDto.SprinklingDto;
 import com.kakaopay.exception.InsufficientAmountException;
+import com.kakaopay.exception.PermissionDeniedException;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,10 +110,21 @@ class SprinklingServiceTest {
   }
 
   @Test
-  @DisplayName("뿌린 사용자만 조회가 가능하다")
-  void readTest02() {}
+  @DisplayName("뿌린 사용자 이외의 사용자가 조회하면 예외 발생")
+  void readTest02() {
+
+    // Given
+    String token = sprinklingService.sprinkle(amount, people, userId, roomId);
+    int otherUserId = 900002;
+
+    // When & Then
+    assertThatThrownBy(() -> sprinklingService.read(token, otherUserId))
+        .isInstanceOf(PermissionDeniedException.class)
+        .hasMessageContaining("뿌린 사용자 이외의 사용자가 조회할 수 없습니다")
+        .hasMessageContaining(token);
+  }
 
   @Test
-  @DisplayName("뿌린 건에 대한 조회는 7일간만 가능하다")
+  @DisplayName("뿌린지 7일이 지난 조회 요청은 예외 발생")
   void readTest03() {}
 }
