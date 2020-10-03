@@ -1,8 +1,9 @@
 plugins {
     id 'org.springframework.boot' version '2.3.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.3'
     id 'java'
-    id "org.asciidoctor.convert" version "1.5.3"
+    id 'war'
 }
 
 group = 'com.kakaopay'
@@ -64,6 +65,6 @@ task copyDocument(type: Copy) {
     into file("${resourcesDir}/static/docs")
 }
 
-bootJar {
+bootWar {
     dependsOn copyDocument
 }
