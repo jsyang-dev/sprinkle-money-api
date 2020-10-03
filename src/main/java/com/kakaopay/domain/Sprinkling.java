@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.kakaopay.contant.SprinklingConstant.EXPIRE_READ_SECONDS;
+import static com.kakaopay.contant.SprinklingConstant.EXPIRE_RECEIVING_SECONDS;
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Sprinkling extends BaseEntity {
-
-  public static final int EXPIRE_RECEIVING_SECONDS = 60 * 10;
-  public static final int EXPIRE_READ_SECONDS = 60 * 60 * 24 * 7;
 
   // token
   @Column(unique = true, nullable = false, length = 3)

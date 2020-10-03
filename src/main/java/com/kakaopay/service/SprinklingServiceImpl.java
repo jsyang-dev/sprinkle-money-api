@@ -57,9 +57,10 @@ public class SprinklingServiceImpl implements SprinklingService {
   }
 
   private void makeReceivingInSprinkling(long amount, int people, Sprinkling sprinkling) {
-    long remainAmount = amount;
 
+    long remainAmount = amount;
     for (int remainPeople = people; remainPeople > 0; remainPeople--) {
+
       long sprinklingAmount;
       if (remainPeople == 1) {
         sprinklingAmount = remainAmount;
@@ -74,6 +75,7 @@ public class SprinklingServiceImpl implements SprinklingService {
   }
 
   private void validateReading(Sprinkling sprinkling, String token, int userId) {
+
     if (sprinkling.isPermissionDenied(userId)) {
       throw new PermissionDeniedException(token);
     }

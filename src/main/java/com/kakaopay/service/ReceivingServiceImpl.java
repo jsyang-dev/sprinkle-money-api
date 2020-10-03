@@ -41,6 +41,7 @@ public class ReceivingServiceImpl implements ReceivingService {
   }
 
   private void validateReceiving(Sprinkling sprinkling, int userId, String roomId) {
+
     if (sprinkling.isReceivingUserDuplicated(userId)) {
       throw new DuplicateReceivingUserException(userId);
     }
