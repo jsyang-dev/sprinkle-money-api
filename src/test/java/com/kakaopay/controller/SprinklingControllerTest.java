@@ -51,7 +51,7 @@ class SprinklingControllerTest {
 
   @Test
   @DisplayName("뿌리기를 요청하고 token을 반환 받음")
-  void SprinklingTest() throws Exception {
+  void sprinklingTest() throws Exception {
 
     // Given
     Request request = Request.builder().amount(20000).people(3).build();
@@ -102,7 +102,7 @@ class SprinklingControllerTest {
 
   @Test
   @DisplayName("요청 Header 누락 테스트")
-  void HeaderValidationTest01() throws Exception {
+  void validateHeaderTest01() throws Exception {
 
     // Given
     Request request = Request.builder().amount(20000).people(3).build();
@@ -129,7 +129,7 @@ class SprinklingControllerTest {
 
   @Test
   @DisplayName("요청 Header 값 검증 테스트")
-  void HeaderValidationTest02() throws Exception {
+  void validateHeaderTest02() throws Exception {
 
     // Given
     Request request = Request.builder().amount(20000).people(3).build();
@@ -158,7 +158,7 @@ class SprinklingControllerTest {
 
   @Test
   @DisplayName("요청 파라미터 값 검증 테스트")
-  void ParameterValidationTest() throws Exception {
+  void validateParameterTest() throws Exception {
 
     // Given
     Request request = Request.builder().amount(0).build();

@@ -57,6 +57,12 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(apiError, apiError.getStatus());
   }
 
+  @ExceptionHandler(SprinklingNotFoundException.class)
+  protected ResponseEntity<ApiError> handle(SprinklingNotFoundException e) {
+    ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getLocalizedMessage(), e);
+    return new ResponseEntity<>(apiError, apiError.getStatus());
+  }
+
   @ExceptionHandler(SprinkleException.class)
   protected ResponseEntity<ApiError> handle(SprinkleException e) {
     ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage(), e);
