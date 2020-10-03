@@ -118,6 +118,46 @@
 
 ### 1. 요구사항 리스트
 
+| 구분 | 요구사항 | 테스트 | 비고 |
+| --- | --- | --- | --- |
+| 공통 | 요청 Header 누락 | SprinklingControllerTest#validateHeaderTest01 | |
+| | 요청 Header 값 검증 | SprinklingControllerTest#validateHeaderTest01 | |
+| 뿌리기 | 뿌리기를 요청하고 token을 반환 받음 | SprinklingServiceTest#sprinkleTest01 | |
+| | 뿌린 금액은 요청한 인원수에게 모든 금액이 분배됨 | SprinklingServiceTest#sprinkleTest02 | |
+| | 뿌린 금액이 요청한 인원수보다 적으면 예외 발생 | SprinklingServiceTest#sprinkleTest03 | |
+| | 다수의 서버, 인스턴스로 동작하더라도 기능에 문제가 없어야 함 | | 낙관적 잠금을 적용하여 데이터 정합성 보장 |
+| 받기 | 받기를 요청하고 받은 금액을 반환 받음 | ReceivingServiceTest#receivingTest01 | |
+| | 동일 사용자가 한 뿌리기에서 두번 이상 받으면 예외 발생 | ReceivingServiceTest#receivingTest02 | |
+| | 자신이 뿌린 건을 자신이 받으면 예외 발생 | ReceivingServiceTest#receivingTest03 | |
+| | 다른 대화방의 사용자가 받으면 예외 발생 | ReceivingServiceTest#receivingTest04 | |
+| | 뿌린지 10분이 지난 받기 요청은 예외 발생 | ReceivingServiceTest#receivingTest05 | |
+| | 미할당 건이 없으면 예외 발생 | ReceivingServiceTest#receivingTest06 | |
+| 조회 | 조회를 요청하고 뿌리기 상태를 반환 받음 | SprinklingServiceTest#readTest01 | |
+| | 뿌린 사용자 이외의 사용자가 조회하면 예외 발생 | SprinklingServiceTest#readTest02 | |
+| | 뿌린지 7일이 지난 조회 요청은 예외 발생 | SprinklingServiceTest#readTest03 | |
+
 ### 2. API 명세
 
+[]()
+
 ### 3. 예외 리스트
+
+ 구분 | 예외 클래스 | 응답코드 | 메시지 |
+| --- | --- | --- | --- |
+| 공통 | MissingRequestHeaderException | 400 | 필수 Header 정보가 누락되었습니다. |
+| | ConstraintViolationException | 400 | 요청 Header 정보가 잘못되었습니다. |
+| | MethodArgumentNotValidException | 400 | 요청 Body 정보가 잘못되었습니다. |
+| | ObjectOptimisticLockingFailureException | 500 | 일시적으로 받기 요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요. |
+| 뿌리기 | InsufficientAmountException | 500 | 뿌린 금액이 요청한 인원수보다 적을 수 없습니다. |합성 보장 |
+| 받기 | SprinklingNotFoundException | 404 | 유효한 뿌리기 건이 존재하지 않습니다. |
+| | DuplicateReceivingUserException | 500 | 동일 사용자가 한 뿌리기에서 두번 이상 받을 수 없습니다. |
+| | DuplicateSprinklingUserException | 500 | 자신이 뿌린 건은 자신이 받을 수 없습니다. |
+| | DifferentRoomException | 500 | 다른 대화방의 사용자가 받을 수 없습니다. |
+| | ReceivingExpiredException | 500 | 뿌린지 10분이 지난 받기 요청은 처리할 수 없습니다. |
+| | ReceivingCompletedException | 500 | 받기가 마감되어 받을 수 없습니다. |
+| 조회 | PermissionDeniedException | 500 | 뿌린 사용자 이외의 사용자가 조회할 수 없습니다. |
+| | ReadExpiredException | 500 | 뿌린지 7일이 지난 조회 요청은 처리할 수 없습니다. |
+
+## 접속 URL
+
+[]()
