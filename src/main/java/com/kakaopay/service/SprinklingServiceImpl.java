@@ -11,6 +11,7 @@ import com.kakaopay.mapper.SprinklingMapper;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class SprinklingServiceImpl implements SprinklingService {
   }
 
   @Override
+  @Cacheable(value = "sprinkling", key = "#token")
   public ReadDto.SprinklingDto read(String token, int userId) {
 
     Sprinkling sprinkling =
