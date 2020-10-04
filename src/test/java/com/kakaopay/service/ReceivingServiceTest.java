@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com.kakaopay.contant.SprinklingConstant.EXPIRE_RECEIVING_SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -110,8 +111,7 @@ class ReceivingServiceTest {
         sprinklingRepository
             .findByToken(token)
             .orElseThrow(() -> new AssertionError("Test failed"));
-    distribution.setCreateDate(
-        LocalDateTime.now().minusSeconds(Sprinkling.EXPIRE_RECEIVING_SECONDS + 1));
+    distribution.setCreateDate(LocalDateTime.now().minusSeconds(EXPIRE_RECEIVING_SECONDS + 1));
 
     // When & Then
     assertThatThrownBy(() -> receivingService.receive(token, receivingUserId, roomId))

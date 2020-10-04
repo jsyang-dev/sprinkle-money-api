@@ -7,7 +7,6 @@ import com.kakaopay.exception.InsufficientAmountException;
 import com.kakaopay.exception.PermissionDeniedException;
 import com.kakaopay.exception.ReadExpiredException;
 import com.kakaopay.repository.SprinklingRepository;
-import com.kakaopay.util.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com.kakaopay.contant.SprinklingConstant.EXPIRE_READ_SECONDS;
+import static com.kakaopay.contant.SprinklingConstant.TOKEN_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -55,7 +56,7 @@ class SprinklingServiceTest {
             .findByToken(token)
             .orElseThrow(() -> new AssertionError("Test failed"));
 
-    assertThat(token).isNotNull().hasSize(RandomUtils.TOKEN_LENGTH);
+    assertThat(token).isNotNull().hasSize(TOKEN_LENGTH);
     assertThat(sprinkling.getAmount()).isEqualTo(amount);
     assertThat(sprinkling.getPeople()).isEqualTo(people);
     assertThat(sprinkling.getUserId()).isEqualTo(userId);
@@ -140,7 +141,7 @@ class SprinklingServiceTest {
         sprinklingRepository
             .findByToken(token)
             .orElseThrow(() -> new AssertionError("Test failed"));
-    sprinkling.setCreateDate(LocalDateTime.now().minusSeconds(Sprinkling.EXPIRE_READ_SECONDS + 1));
+    sprinkling.setCreateDate(LocalDateTime.now().minusSeconds(EXPIRE_READ_SECONDS + 1));
 
     // When & Then
     assertThatThrownBy(() -> sprinklingService.read(token, userId))

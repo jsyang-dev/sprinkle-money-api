@@ -11,6 +11,7 @@ import com.kakaopay.mapper.SprinklingMapper;
 import com.kakaopay.repository.SprinklingRepository;
 import com.kakaopay.util.RandomUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class SprinklingServiceImpl implements SprinklingService {
   }
 
   @Override
+  @Cacheable(value = "sprinkling", key = "#token")
   public ReadDto.SprinklingDto read(String token, int userId) {
 
     Sprinkling sprinkling =
@@ -57,9 +59,10 @@ public class SprinklingServiceImpl implements SprinklingService {
   }
 
   private void makeReceivingInSprinkling(long amount, int people, Sprinkling sprinkling) {
-    long remainAmount = amount;
 
+    long remainAmount = amount;
     for (int remainPeople = people; remainPeople > 0; remainPeople--) {
+
       long sprinklingAmount;
       if (remainPeople == 1) {
         sprinklingAmount = remainAmount;
@@ -74,6 +77,7 @@ public class SprinklingServiceImpl implements SprinklingService {
   }
 
   private void validateReading(Sprinkling sprinkling, String token, int userId) {
+
     if (sprinkling.isPermissionDenied(userId)) {
       throw new PermissionDeniedException(token);
     }
