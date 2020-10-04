@@ -15,8 +15,6 @@
 [[overview-http-verbs]]
 == HTTP 동사
 
-본 REST API에서 사용하는 HTTP 동사(verbs)는 가능한한 표준 HTTP와 REST 규약을 따릅니다.
-
 |===
 | 동사 | 용례
 
@@ -38,8 +36,6 @@
 
 [[overview-http-status-codes]]
 == HTTP 상태 코드
-
-본 REST API에서 사용하는 HTTP 상태 코드는 가능한한 표준 HTTP와 REST 규약을 따릅니다.
 
 |===
 | 상태 코드 | 용례
@@ -63,12 +59,55 @@
 | 서버에 오류가 발생하여 요청을 수행할 수 없음.
 |===
 
+[[overview-exception-response]]
+== 예외 Response Body
+
+|===
+| 클래스 | 필드 | 설명
+
+| `ApiError`
+| timestamp
+| 예외가 발생한 일시
+
+|
+| status
+| 에러 코드
+
+|
+| message
+| 노출용 메시지
+
+|
+| debugMessage
+| 디버그용 메시지
+
+|
+| subErrors
+| 파라미터 검증 메시지
+
+| `ApiSubError`
+| object
+| 클래스명
+
+|
+| field
+| 필드명
+
+|
+| rejectedValue
+| 검증 실패한 입력 값
+
+|
+| message
+| 상세 메시지
+|===
+
 [[overview-hypermedia]]
 == 하이퍼미디어
 
 본 REST API는 하이퍼미디어와 사용하며 응답에 담겨있는 리소스는 다른 리소스에 대한 링크를 가지고 있다.
-응답은 http://stateless.co/hal_specification.html[Hypertext Application from resource to resource. Language (HAL)] 형식을 따른다.
-링크는 `_links`라는 키로 제공한다. 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.
+응답은 `Hypertext Application Language (HAL)` 형식을 따른다.
+링크는 `_links` 라는 키로 제공한다.
 
 [[resources]]
 = 리소스

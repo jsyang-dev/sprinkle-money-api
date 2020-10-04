@@ -17,3 +17,6 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+
+app:
+  host: 15.164.70.143
