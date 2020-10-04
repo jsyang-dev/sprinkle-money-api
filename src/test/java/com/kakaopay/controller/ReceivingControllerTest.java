@@ -43,7 +43,7 @@ class ReceivingControllerTest {
 
   @Test
   @DisplayName("받기를 요청하고 받은 금액을 반환 받음")
-  void receivingTest() throws Exception {
+  void receiveTest() throws Exception {
 
     // Given
     long amount = 20000;

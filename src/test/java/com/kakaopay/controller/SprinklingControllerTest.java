@@ -51,7 +51,7 @@ class SprinklingControllerTest {
 
   @Test
   @DisplayName("뿌리기를 요청하고 token을 반환 받음")
-  void sprinklingTest() throws Exception {
+  void sprinkleTest() throws Exception {
 
     // Given
     Request request = Request.builder().amount(20000).people(3).build();
