@@ -46,7 +46,7 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("받기를 요청하고 받은 금액을 반환 받음")
-  void receivingTest01() {
+  void receiveTest01() {
 
     // Given
     int receivingUserId = 900002;
@@ -60,7 +60,7 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("동일 사용자가 한 뿌리기에서 두번 이상 받으면 예외 발생")
-  void receivingTest02() {
+  void receiveTest02() {
 
     // Given
     int receivingUserId = 900002;
@@ -75,7 +75,7 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("자신이 뿌린 건을 자신이 받으면 예외 발생")
-  void receivingTest03() {
+  void receiveTest03() {
 
     // When & Then
     assertThatThrownBy(() -> receivingService.receive(token, userId, roomId))
@@ -86,7 +86,7 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("다른 대화방의 사용자가 받으면 예외 발생")
-  void receivingTest04() {
+  void receiveTest04() {
 
     // Given
     int receivingUserId = 900002;
@@ -102,7 +102,7 @@ class ReceivingServiceTest {
   @Test
   @DisplayName("뿌린지 10분이 지난 받기 요청은 예외 발생")
   @Transactional
-  void receivingTest05() {
+  void receiveTest05() {
 
     // Given
     int receivingUserId = 900002;
@@ -121,7 +121,7 @@ class ReceivingServiceTest {
 
   @Test
   @DisplayName("미할당 건이 없으면 예외 발생")
-  void receivingTest06() {
+  void receiveTest06() {
 
     // Given
     int otherReceivingUserId = 900005;
