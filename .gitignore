@@ -241,7 +241,4 @@ $RECYCLE.BIN/
 # Project exclude paths
 /.gradle/
 
-# Rest Docs Document
-/src/main/resources/static/docs/index.html
-
 generated/
