@@ -37,7 +37,7 @@ public class RandomUtils {
 
     long min = 1;
     long max = remainAmount - remainPeople + 1; // 한명당 최소 1원은 받을 수 있도록 금액을 남겨야 한다
-    return new SecureRandom().longs(1, min, max).sum();
+    return min == max ? 1 : new SecureRandom().longs(1, min, max).sum();
   }
 
   private static List<Integer> getRandomDecisionInt() {
