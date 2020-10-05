@@ -10,7 +10,6 @@ import com.kakaopay.exception.ReceivingExpiredException;
 import com.kakaopay.exception.SprinklingNotFoundException;
 import com.kakaopay.repository.SprinklingRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ public class ReceivingServiceImpl implements ReceivingService {
 
   @Override
   @Transactional
-  @CacheEvict(value = "sprinkling", key = "#token")
   public long receive(String token, int userId, String roomId) {
 
     Sprinkling sprinkling =
