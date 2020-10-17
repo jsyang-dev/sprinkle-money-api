@@ -38,7 +38,7 @@ public class SprinklingServiceImpl implements SprinklingService {
             .userId(userId)
             .build();
 
-    makeReceivingInSprinkling(amount, people, sprinkling);
+    makeReceivingInSprinkling(sprinkling, amount, people);
 
     return sprinklingRepository.save(sprinkling).getToken();
   }
@@ -51,12 +51,12 @@ public class SprinklingServiceImpl implements SprinklingService {
             .findByToken(token)
             .orElseThrow(() -> new SprinklingNotFoundException(token));
 
-    validateReading(sprinkling, token, userId);
+    validateReading(sprinkling, userId);
 
     return sprinklingMapper.toDto(sprinkling);
   }
 
-  private void makeReceivingInSprinkling(long amount, int people, Sprinkling sprinkling) {
+  private void makeReceivingInSprinkling(Sprinkling sprinkling, long amount, int people) {
 
     long remainAmount = amount;
     for (int remainPeople = people; remainPeople > 0; remainPeople--) {
@@ -74,10 +74,10 @@ public class SprinklingServiceImpl implements SprinklingService {
     }
   }
 
-  private void validateReading(Sprinkling sprinkling, String token, int userId) {
+  private void validateReading(Sprinkling sprinkling, int userId) {
 
     if (sprinkling.isPermissionDenied(userId)) {
-      throw new PermissionDeniedException(token);
+      throw new PermissionDeniedException(sprinkling.getToken());
     }
     if (sprinkling.isReadExpired()) {
       throw new ReadExpiredException(sprinkling.getCreateDate());
