@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.kakaopay.contant.SprinklingConstant.EXPIRE_READ_SECONDS;
-import static com.kakaopay.contant.SprinklingConstant.EXPIRE_RECEIVING_SECONDS;
+import static com.kakaopay.constant.SprinklingConstant.EXPIRE_READ_SECONDS;
+import static com.kakaopay.constant.SprinklingConstant.EXPIRE_RECEIVING_SECONDS;
 
 @Entity
 @Getter

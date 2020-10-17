@@ -1,4 +1,4 @@
-package com.kakaopay.contant;
+package com.kakaopay.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

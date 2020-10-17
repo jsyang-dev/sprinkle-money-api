@@ -7,10 +7,10 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.kakaopay.contant.SprinklingConstant.DECISION_LOWER_ALPHABET_TYPE;
-import static com.kakaopay.contant.SprinklingConstant.DECISION_NUMBER_TYPE;
-import static com.kakaopay.contant.SprinklingConstant.DECISION_UPPER_ALPHABET_TYPE;
-import static com.kakaopay.contant.SprinklingConstant.TOKEN_LENGTH;
+import static com.kakaopay.constant.SprinklingConstant.DECISION_LOWER_ALPHABET_TYPE;
+import static com.kakaopay.constant.SprinklingConstant.DECISION_NUMBER_TYPE;
+import static com.kakaopay.constant.SprinklingConstant.DECISION_UPPER_ALPHABET_TYPE;
+import static com.kakaopay.constant.SprinklingConstant.TOKEN_LENGTH;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RandomUtils {
