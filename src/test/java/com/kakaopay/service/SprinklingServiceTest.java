@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static com.kakaopay.contant.SprinklingConstant.EXPIRE_READ_SECONDS;
-import static com.kakaopay.contant.SprinklingConstant.TOKEN_LENGTH;
+import static com.kakaopay.constant.SprinklingConstant.EXPIRE_READ_SECONDS;
+import static com.kakaopay.constant.SprinklingConstant.TOKEN_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

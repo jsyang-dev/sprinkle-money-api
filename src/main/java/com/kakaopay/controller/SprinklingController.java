@@ -32,7 +32,7 @@ public class SprinklingController {
   private final SprinklingService sprinklingService;
 
   @PostMapping
-  public ResponseEntity<Response> distribute(
+  public ResponseEntity<Response> sprinkle(
       @RequestHeader("X-USER-ID") @Positive int userId,
       @RequestHeader("X-ROOM-ID") @NotBlank String roomID,
       @RequestBody @Valid Request request) {
