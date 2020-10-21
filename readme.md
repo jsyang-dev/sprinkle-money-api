@@ -1,4 +1,4 @@
-# 카카오페이 뿌리기 기능 구현하기
+# 뿌리기 기능 구현하기
 
 ## 목차
 
@@ -153,7 +153,72 @@
 
 ### 2. API 명세
 
-[http://15.164.70.143:8080/docs/index.html](http://15.164.70.143:8080/docs/index.html)
+#### 뿌리기 API (`POST` /v1/sprinklings)
+
+Request headers
+
+| Name | Description |
+| --- | --- |
+| X-USER-ID | 사용자 ID |
+| X-ROOM-ID | 대화방 ID |
+
+Request fields
+
+| Path | Type | Description |
+| --- | --- | --- |
+| amount | Number | 뿌릴 금액 |
+| people | Number | 뿌릴 인원 |
+
+HTTP request
+
+```
+POST /v1/sprinklings HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+X-USER-ID: 900001
+X-ROOM-ID: TEST-ROOM
+Accept: application/hal+json
+Content-Length: 27
+Host: 15.164.70.143:8080
+
+{"amount":20000,"people":3}
+```
+
+Response fields
+
+| Path | Type | Description |
+| --- | --- | --- |
+| token | Number | 뿌리기 token |
+
+Example response
+
+```
+HTTP/1.1 201 Created
+Location: http://15.164.70.143:8080/v1/sprinklings/364
+Content-Type: application/hal+json
+Content-Length: 362
+
+{
+  "token" : "364",
+  "_links" : {
+    "self" : {
+      "href" : "http://15.164.70.143:8080/v1/sprinklings"
+    },
+    "receiving" : {
+      "href" : "http://15.164.70.143:8080/v1/receivings/364"
+    },
+    "read" : {
+      "href" : "http://15.164.70.143:8080/v1/sprinklings/364"
+    },
+    "profile" : {
+      "href" : "/docs/index.html#sprinkling"
+    }
+  }
+}
+```
+
+* 받기 API
+
+* 조회 API
 
 ### 3. 예외 리스트
 
